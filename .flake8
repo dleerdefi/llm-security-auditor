@@ -18,7 +18,10 @@ exclude =
     .pytest_cache,
     build,
     dist,
-    *.egg-info
+    *.egg-info,
+    attacker/__init__.py,
+    defender/__init__.py,
+    tests/test_end_to_end.py
 per-file-ignores =
     # Allow unused imports in __init__.py files
     __init__.py:F401

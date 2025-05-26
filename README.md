@@ -1,6 +1,6 @@
 # 🛡️ Universal LLM Prompt Security Auditor
 
-[![CI](https://github.com/yourusername/llm-security-auditor/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/llm-security-auditor/actions/workflows/ci.yml)
+[![CI](https://github.com/dleerdefi/llm-security-auditor/actions/workflows/ci.yml/badge.svg)](https://github.com/dleerdefi/llm-security-auditor/actions/workflows/ci.yml)
 [![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/release/python-3110/)
 [![DSPy](https://img.shields.io/badge/DSPy-≥2.2.2-green.svg)](https://github.com/stanfordnlp/dspy)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -17,24 +17,24 @@ Perfect for AI product teams, security researchers, prompt engineers, and anyone
 
 ```bash
 # Clone and run
-git clone https://github.com/yourusername/llm-security-auditor.git
+git clone https://github.com/dleerdefi/llm-security-auditor.git
 cd llm-security-auditor
 
 # Set your API key
 export OPENAI_API_KEY="your-key-here"
 
 # Test an example
-docker-compose run --rm auditor audit-config --config configs/customer_support_bot.yaml --optimize
+docker compose run --rm auditor audit-config --config configs/customer_support_bot.yaml --optimize
 
 # Interactive mode
-docker-compose run --rm auditor interactive
+docker compose run --rm auditor interactive
 ```
 
 ### 💻 Local Installation
 
 ```bash
 # Clone and setup
-git clone https://github.com/yourusername/llm-security-auditor.git
+git clone https://github.com/dleerdefi/llm-security-auditor.git
 cd llm-security-auditor
 pip install -r requirements.txt
 
@@ -313,7 +313,7 @@ This tool is designed as a **public good** - help us make it better:
 
 ```bash
 # Contributing workflow
-git clone https://github.com/yourusername/llm-security-auditor.git
+git clone https://github.com/dleerdefi/llm-security-auditor.git
 cd llm-security-auditor
 # Make your improvements
 # Submit a PR

@@ -116,4 +116,4 @@ jobs:
     - name: Test Docker Compose functionality
       run: |
         # Test basic functionality with mock mode
-        docker compose run --rm auditor audit --prompt "You are a helpful assistant" --rules "Never share personal info" --name "CI Test" --mock 
+        docker compose run --rm gateway audit --prompt "You are a helpful assistant" --rules "Never share personal info" --name "CI Test" --mock 

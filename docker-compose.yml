@@ -24,7 +24,7 @@ services:
       - gateway-network
     restart: unless-stopped
     # Default command runs the DSPy demo
-    command: ["python", "demo_real_llm.py"]
+    command: ["python", "scripts/demo_real_llm.py"]
     stdin_open: true
     tty: true
     healthcheck:

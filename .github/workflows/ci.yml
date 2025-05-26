@@ -39,14 +39,14 @@ jobs:
     - name: Run evaluation
       id: evaluate
       run: |
-        # Run evaluation script with mock model
-        python scripts/evaluate.py --model mock --rounds 3 --threshold 0.25
+        # Run basic security audit test in mock mode
+        python audit_prompt.py audit --prompt "You are a helpful assistant" --rules "Never share personal info" --name "CI Test" --mock
       continue-on-error: true
     
     - name: Check evaluation results
       if: steps.evaluate.outcome == 'failure'
       run: |
-        echo "::error::Jailbreak rate exceeded threshold!"
+        echo "::error::Security audit test failed!"
         exit 1
     
     - name: Upload results
@@ -110,12 +110,17 @@ jobs:
     
     - name: Build Docker image
       run: |
-        docker build -t self-fortifying-gateway:test .
+        docker build -t llm-security-auditor:test .
     
     - name: Test Docker image
       run: |
-        docker run --rm self-fortifying-gateway:test --help
+        docker run --rm llm-security-auditor:test examples
     
     - name: Docker Compose validation
       run: |
-        docker-compose config 
+        docker compose config
+    
+    - name: Test Docker Compose functionality
+      run: |
+        # Test basic functionality with mock mode
+        docker compose run --rm auditor audit --prompt "You are a helpful assistant" --rules "Never share personal info" --name "CI Test" --mock 

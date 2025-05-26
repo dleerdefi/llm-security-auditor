@@ -154,4 +154,4 @@ mlruns/
 
 # MLflow artifacts
 mlflow-artifacts/
-mlflow.db 
+mlflow.db

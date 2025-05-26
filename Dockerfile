@@ -1,6 +1,6 @@
 # Multi-stage Dockerfile for DSPy-Powered LLM Security Gateway
 # Stage 1: Builder
-FROM python:3.11-slim as builder
+FROM python:3.11-slim AS builder
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y \
@@ -51,14 +51,14 @@ USER gateway
 ENV PATH=/home/gateway/.local/bin:$PATH
 
 # Set Python path
-ENV PYTHONPATH=/app:$PYTHONPATH
+ENV PYTHONPATH=/app
 
 # Default environment variables
 ENV PYTHONUNBUFFERED=1
 ENV DSPY_CACHE_DIR=/app/.dspy_cache
 
 # Make scripts executable
-RUN chmod +x demo_real_llm.py audit_prompt.py
+RUN chmod +x audit_prompt.py optimize_prompt.py demo.py scripts/demo_real_llm.py
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
@@ -68,4 +68,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
 ENTRYPOINT ["python"]
 
 # Default command runs the DSPy demo
-CMD ["demo_real_llm.py"] 
+CMD ["scripts/demo_real_llm.py"] 

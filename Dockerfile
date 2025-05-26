@@ -65,7 +65,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
     CMD python -c "import dspy; print('DSPy Gateway OK')" || exit 1
 
 # Default entrypoint for DSPy demo
-ENTRYPOINT ["python"]
+ENTRYPOINT ["python", "audit_prompt.py"]
 
-# Default command runs the DSPy demo
-CMD ["scripts/demo_real_llm.py"] 
+# Default command shows examples
+CMD ["examples"] 

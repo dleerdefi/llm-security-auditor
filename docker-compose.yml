@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  # Main LLM Security Auditor
+  auditor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: llm-security-auditor
+    environment:
+      - PYTHONUNBUFFERED=1
+      # Add your API keys here or via .env file
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    volumes:
+      - ./configs:/app/configs
+      - ./prompts:/app/prompts
+      - ./data:/app/data
+      - ./results:/app/results
+    networks:
+      - auditor-network
+    restart: unless-stopped
+    # Default command runs interactive mode
+    command: ["python", "audit_prompt.py", "examples"]
+    stdin_open: true
+    tty: true
+
+  # Optional: MLflow for tracking optimization results
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.11.0
+    container_name: mlflow-tracking
+    ports:
+      - "5000:5000"
+    environment:
+      - MLFLOW_BACKEND_STORE_URI=sqlite:///mlflow.db
+      - MLFLOW_DEFAULT_ARTIFACT_ROOT=/mlflow-artifacts
+    volumes:
+      - mlflow-data:/mlflow
+      - mlflow-artifacts:/mlflow-artifacts
+    networks:
+      - auditor-network
+    command: >
+      mlflow server
+      --backend-store-uri sqlite:///mlflow/mlflow.db
+      --default-artifact-root /mlflow-artifacts
+      --host 0.0.0.0
+      --port 5000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    profiles:
+      - full  # Only start with --profile full
+
+  # Optional: Local Ollama for cost-effective testing
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-local
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - auditor-network
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+    restart: unless-stopped
+    entrypoint: >
+      /bin/sh -c "
+      ollama serve &
+      sleep 5 &&
+      ollama pull llama3:8b-instruct &&
+      wait
+      "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    profiles:
+      - full  # Only start with --profile full
+
+networks:
+  auditor-network:
+    driver: bridge
+
+volumes:
+  mlflow-data:
+  mlflow-artifacts:
+  ollama-data: 

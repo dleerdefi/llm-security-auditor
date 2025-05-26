@@ -1,29 +1,61 @@
 services:
-  # Main LLM Security Auditor
-  auditor:
+  # Main DSPy-Powered LLM Security Gateway
+  gateway:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: llm-security-auditor
+    container_name: dspy-llm-security-gateway
     environment:
       - PYTHONUNBUFFERED=1
       # Add your API keys here or via .env file
       - OPENAI_API_KEY=${OPENAI_API_KEY:-}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      # DSPy Configuration
+      - DSPY_CACHE_DIR=/app/.dspy_cache
+      - DSPY_LOG_LEVEL=${DSPY_LOG_LEVEL:-INFO}
     volumes:
       - ./configs:/app/configs
       - ./prompts:/app/prompts
       - ./data:/app/data
       - ./results:/app/results
+      - ./tests:/app/tests
+      - dspy-cache:/app/.dspy_cache
     networks:
-      - auditor-network
+      - gateway-network
     restart: unless-stopped
-    # Default command runs interactive mode
-    command: ["python", "audit_prompt.py", "examples"]
+    # Default command runs the DSPy demo
+    command: ["python", "demo_real_llm.py"]
     stdin_open: true
     tty: true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import dspy; print('DSPy OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
 
-  # Optional: MLflow for tracking optimization results
+  # DSPy Validation and Testing Service
+  validator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dspy-validator
+    environment:
+      - PYTHONUNBUFFERED=1
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+    volumes:
+      - ./configs:/app/configs
+      - ./tests:/app/tests
+      - ./results:/app/results
+      - dspy-cache:/app/.dspy_cache
+    networks:
+      - gateway-network
+    command: ["python", "-m", "pytest", "tests/", "-v"]
+    profiles:
+      - test  # Only start with --profile test
+
+  # MLflow for tracking DSPy optimization results
   mlflow:
     image: ghcr.io/mlflow/mlflow:v2.11.0
     container_name: mlflow-tracking
@@ -36,7 +68,7 @@ services:
       - mlflow-data:/mlflow
       - mlflow-artifacts:/mlflow-artifacts
     networks:
-      - auditor-network
+      - gateway-network
     command: >
       mlflow server
       --backend-store-uri sqlite:///mlflow/mlflow.db
@@ -61,7 +93,7 @@ services:
     volumes:
       - ollama-data:/root/.ollama
     networks:
-      - auditor-network
+      - gateway-network
     environment:
       - OLLAMA_KEEP_ALIVE=24h
     restart: unless-stopped
@@ -82,10 +114,11 @@ services:
       - full  # Only start with --profile full
 
 networks:
-  auditor-network:
+  gateway-network:
     driver: bridge
 
 volumes:
   mlflow-data:
   mlflow-artifacts:
-  ollama-data: 
+  ollama-data:
+  dspy-cache: 

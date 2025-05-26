@@ -1,4 +1,4 @@
-# Multi-stage Dockerfile for LLM Security Auditor
+# Multi-stage Dockerfile for DSPy-Powered LLM Security Gateway
 # Stage 1: Builder
 FROM python:3.11-slim as builder
 
@@ -6,6 +6,7 @@ FROM python:3.11-slim as builder
 RUN apt-get update && apt-get install -y \
     gcc \
     g++ \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -24,41 +25,47 @@ FROM python:3.11-slim
 RUN apt-get update && apt-get install -y \
     libstdc++6 \
     curl \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
-RUN useradd -m -u 1000 auditor
+RUN useradd -m -u 1000 gateway
 
 # Set working directory
 WORKDIR /app
 
 # Copy Python dependencies from builder
-COPY --from=builder /root/.local /home/auditor/.local
+COPY --from=builder /root/.local /home/gateway/.local
 
 # Copy application code
-COPY --chown=auditor:auditor . .
+COPY --chown=gateway:gateway . .
 
 # Create necessary directories
-RUN mkdir -p results prompts configs data && \
-    chown -R auditor:auditor /app
+RUN mkdir -p results prompts configs data tests .dspy_cache && \
+    chown -R gateway:gateway /app
 
 # Switch to non-root user
-USER auditor
+USER gateway
 
 # Add local bin to PATH
-ENV PATH=/home/auditor/.local/bin:$PATH
+ENV PATH=/home/gateway/.local/bin:$PATH
 
 # Set Python path
 ENV PYTHONPATH=/app:$PYTHONPATH
 
 # Default environment variables
 ENV PYTHONUNBUFFERED=1
+ENV DSPY_CACHE_DIR=/app/.dspy_cache
 
-# Make the CLI tool executable
-RUN chmod +x audit_prompt.py
+# Make scripts executable
+RUN chmod +x demo_real_llm.py audit_prompt.py
 
-# Default entrypoint
-ENTRYPOINT ["python", "audit_prompt.py"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=20s --retries=3 \
+    CMD python -c "import dspy; print('DSPy Gateway OK')" || exit 1
 
-# Default command shows examples
-CMD ["examples"] 
+# Default entrypoint for DSPy demo
+ENTRYPOINT ["python"]
+
+# Default command runs the DSPy demo
+CMD ["demo_real_llm.py"] 

@@ -13,6 +13,37 @@ Perfect for AI product teams, security researchers, prompt engineers, and anyone
 
 ## 🚀 Quick Start
 
+### 🎯 **Holistic Optimization** (NEW!)
+
+```bash
+# Interactive holistic optimization
+python optimize_prompt.py interactive
+
+# Quick optimization
+python optimize_prompt.py optimize \
+  --prompt "You are a helpful assistant" \
+  --goals "Improve user satisfaction" \
+  --audience "General users" \
+  --voice "Friendly and professional"
+
+# Use configuration file
+python optimize_prompt.py optimize-config \
+  --config configs/holistic_customer_support.yaml
+```
+
+### 🛡️ **Security-Focused Audit**
+
+```bash
+# Interactive security audit
+python audit_prompt.py interactive
+
+# Quick security audit
+python audit_prompt.py audit \
+  --prompt "You are a helpful assistant" \
+  --rules "Never share personal info" \
+  --optimize
+```
+
 ### 🐳 Docker (Recommended - Zero Setup)
 
 ```bash
@@ -23,11 +54,11 @@ cd llm-security-auditor
 # Set your API key
 export OPENAI_API_KEY="your-key-here"
 
-# Test an example
-docker compose run --rm auditor audit-config --config configs/customer_support_bot.yaml --optimize
+# Run holistic optimization
+docker compose run --rm auditor python optimize_prompt.py interactive
 
-# Interactive mode
-docker compose run --rm auditor interactive
+# Run security audit
+docker compose run --rm auditor audit-config --config configs/customer_support_bot.yaml --optimize
 ```
 
 ### 💻 Local Installation
@@ -42,8 +73,8 @@ pip install -r requirements.txt
 export OPENAI_API_KEY="your-openai-key-here"
 export ANTHROPIC_API_KEY="your-anthropic-key-here"
 
-# Test an example
-python audit_prompt.py audit-config --config configs/customer_support_bot.yaml --optimize
+# Start optimizing!
+python optimize_prompt.py interactive
 ```
 
 **📖 Need detailed setup instructions?** → See [SETUP.md](SETUP.md) for comprehensive installation guide
@@ -51,6 +82,15 @@ python audit_prompt.py audit-config --config configs/customer_support_bot.yaml -
 **🎮 Want to try it instantly?** → Run `python demo.py` for a quick interactive test
 
 ## 🎯 What This Tool Does
+
+### 🎯 **Holistic Prompt Optimization** (NEW!)
+Optimize your prompts across **6 critical dimensions**:
+- **🛡️ Security**: Jailbreak resistance and safety measures
+- **⚡ Effectiveness**: Task completion quality and accuracy
+- **👥 User Experience**: Clarity, helpfulness, and engagement
+- **🎯 Business Alignment**: Goal support and brand consistency
+- **💰 Cost Efficiency**: Token usage and response optimization
+- **⚖️ Compliance**: Ethics, regulations, and risk management
 
 ### 🔍 **Comprehensive Security Testing**
 Tests your prompts against **25+ attack categories**:

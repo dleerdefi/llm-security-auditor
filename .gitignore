@@ -155,3 +155,10 @@ mlruns/
 # MLflow artifacts
 mlflow-artifacts/
 mlflow.db
+
+# Development directories that shouldn't be in repo
+self-fortifying-gateway/
+
+# Additional Python cache patterns
+*.pyc
+*.pyo

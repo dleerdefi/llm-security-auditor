@@ -182,7 +182,7 @@ python audit_prompt.py audit-config --config configs/code_review_assistant.yaml
 Tests for code execution, system access, and malicious code generation attempts.
 
 **🎯 What's Included Out of the Box:**
-- ✅ **70+ Attack Patterns** - OWASP LLM Top 10 2025 aligned across 12 categories
+- ✅ **100+ Attack Patterns** - OWASP LLM Top 10 2025 aligned across 12 categories + advanced jailbreak techniques inspired by [elder-plinius](https://github.com/elder-plinius)
 - ✅ **3 Complete Examples** - Customer support, financial advisory, code review
 - ✅ **DSPy-Powered Optimization** - Automated prompt security improvement using Stanford research
 - ✅ **Latest 2025 Models** - GPT-4o, Claude 4 Opus/Sonnet, O1-Preview, Claude 3.7
@@ -233,7 +233,7 @@ custom_attacks:
 
 | Test Type | Cost | Time | Coverage |
 |-----------|------|------|----------|
-| **This Tool** | ~$0.50-2.00 | 5 minutes | 70+ attack patterns |
+| **This Tool** | ~$0.01-2.00 | 5 minutes | 70+ attack patterns |
 | Manual Red Team | $5,000+ | 2-4 weeks | Variable |
 | Security Consultant | $10,000+ | 1-2 months | Comprehensive |
 
